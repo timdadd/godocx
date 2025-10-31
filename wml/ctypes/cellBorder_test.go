@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/gomutex/godocx/internal"
-	"github.com/gomutex/godocx/wml/stypes"
+	"github.com/timdadd/godocx/internal"
+	"github.com/timdadd/godocx/wml/stypes"
 )
 
 func TestCellBorders_MarshalXML(t *testing.T) {

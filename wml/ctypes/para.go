@@ -3,8 +3,8 @@ package ctypes
 import (
 	"encoding/xml"
 
-	"github.com/gomutex/godocx/internal"
-	"github.com/gomutex/godocx/wml/stypes"
+	"github.com/timdadd/godocx/internal"
+	"github.com/timdadd/godocx/wml/stypes"
 )
 
 type Paragraph struct {

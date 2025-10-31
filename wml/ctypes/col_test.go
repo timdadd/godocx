@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gomutex/godocx/internal"
+	"github.com/timdadd/godocx/internal"
 )
 
 func TestColumn_MarshalXML(t *testing.T) {
