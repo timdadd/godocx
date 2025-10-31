@@ -37,7 +37,6 @@ package main
 
 import (
 	"log"
-
 	"github.com/timdadd/godocx"
 )
 

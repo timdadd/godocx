@@ -316,7 +316,9 @@ func (p *Paragraph) addDrawing(rID string, imgCount uint, width units.Inch, heig
 	return &inline
 }
 
-func (p *Paragraph) AddPicture(path string, width units.Inch, height units.Inch) (pm *PicMeta, err error) {
+// AddPictureFromFile adds a picture to the paragraph, use (rd *RootDoc) AddPictureFromFile
+// into new paragraph
+func (p *Paragraph) AddPictureFromFile(path string, width units.Inch, height units.Inch) (pm *PicMeta, err error) {
 	var imgBytes []byte
 	if imgBytes, err = internal.FileToByte(path); err != nil {
 		return nil, err
@@ -324,6 +326,8 @@ func (p *Paragraph) AddPicture(path string, width units.Inch, height units.Inch)
 	return p.AddImage(imgBytes, width, height)
 }
 
+// AddImage adds a picture to the paragraph, use (rd *RootDoc) AddImage
+// into new paragraph
 func (p *Paragraph) AddImage(imgBytes []byte, width units.Inch, height units.Inch) (pm *PicMeta, err error) {
 	imgMIME := http.DetectContentType(imgBytes)
 	if !strings.HasPrefix(imgMIME, "image") {
