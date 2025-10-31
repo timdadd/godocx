@@ -3,6 +3,7 @@ package docx
 import (
 	"github.com/gomutex/godocx/common/units"
 	"github.com/gomutex/godocx/dml"
+	"github.com/gomutex/godocx/internal"
 )
 
 type PicMeta struct {
@@ -10,7 +11,7 @@ type PicMeta struct {
 	Inline *dml.Inline
 }
 
-// AddPicture adds a new image to the document.
+// AddPictureFromFile adds a new image to the document.
 //
 // Example usage:
 //
@@ -28,14 +29,19 @@ type PicMeta struct {
 // Returns:
 //   - *PicMeta: Metadata about the added picture, including the Paragraph instance and Inline element.
 //   - error: An error, if any occurred during the process.
-func (rd *RootDoc) AddPicture(path string, width units.Inch, height units.Inch) (*PicMeta, error) {
+func (rd *RootDoc) AddPictureFromFile(path string, width units.Inch, height units.Inch) (pm *PicMeta, err error) {
+	var imgBytes []byte
+	if imgBytes, err = internal.FileToByte(path); err != nil {
+		return nil, err
+	}
+	return rd.AddImage(imgBytes, width, height)
+}
 
+func (rd *RootDoc) AddImage(imgBytes []byte, width, height units.Inch) (pm *PicMeta, err error) {
 	p := newParagraph(rd)
-
 	bodyElem := DocumentChild{
 		Para: p,
 	}
 	rd.Document.Body.Children = append(rd.Document.Body.Children, bodyElem)
-
-	return p.AddPicture(path, width, height)
+	return p.AddImage(imgBytes, width, height)
 }

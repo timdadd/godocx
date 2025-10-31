@@ -4,6 +4,8 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"mime"
+	"net/http"
 	"path/filepath"
 	"strings"
 
@@ -177,7 +179,7 @@ func (p *Paragraph) Indent(indentProp *ctypes.Indent) {
 	p.ct.Property.Indent = indentProp
 }
 
-// Appends a new text to the Paragraph.
+// AddText appends a new text to the Paragraph.
 // Example:
 //
 //	paragraph := AddParagraph()
@@ -250,7 +252,7 @@ func (p *Paragraph) GetStyle() (*ctypes.Style, error) {
 func (p *Paragraph) AddLink(text string, link string) *Hyperlink {
 	rId := p.root.Document.addLinkRelation(link)
 
-	runChildren := []ctypes.RunChild{}
+	var runChildren []ctypes.RunChild
 	runChildren = append(runChildren, ctypes.RunChild{
 		Text: ctypes.TextFromString(text),
 	})
@@ -296,7 +298,7 @@ func (p *Paragraph) addDrawing(rID string, imgCount uint, width units.Inch, heig
 		*dml.NewPicGraphic(dmlpic.NewPic(rID, imgCount, eWidth, eHeight)),
 	)
 
-	runChildren := []ctypes.RunChild{}
+	var runChildren []ctypes.RunChild
 	drawing := &dml.Drawing{}
 
 	drawing.Inline = append(drawing.Inline, inline)
@@ -314,32 +316,35 @@ func (p *Paragraph) addDrawing(rID string, imgCount uint, width units.Inch, heig
 	return &inline
 }
 
-func (p *Paragraph) AddPicture(path string, width units.Inch, height units.Inch) (*PicMeta, error) {
-
-	imgBytes, err := internal.FileToByte(path)
-	if err != nil {
+func (p *Paragraph) AddPicture(path string, width units.Inch, height units.Inch) (pm *PicMeta, err error) {
+	var imgBytes []byte
+	if imgBytes, err = internal.FileToByte(path); err != nil {
 		return nil, err
 	}
+	return p.AddImage(imgBytes, width, height)
+}
 
-	imgExt := filepath.Ext(path)
+func (p *Paragraph) AddImage(imgBytes []byte, width units.Inch, height units.Inch) (pm *PicMeta, err error) {
+	imgMIME := http.DetectContentType(imgBytes)
+	if !strings.HasPrefix(imgMIME, "image") {
+		return nil, fmt.Errorf("unknown content type (%s)", imgMIME)
+	}
+	var extensionTypes []string
+	if extensionTypes, err = mime.ExtensionsByType(filepath.Ext(imgMIME)); err != nil || len(extensionTypes) == 0 {
+		return nil, fmt.Errorf("cannot determine extension for mime type (%s)", imgMIME)
+	}
+	imgExt := strings.TrimPrefix(extensionTypes[0], ".")
+
 	p.root.ImageCount += 1
-	fileName := fmt.Sprintf("image%d%s", p.root.ImageCount, imgExt)
+	fileName := fmt.Sprintf("image%d.%s", p.root.ImageCount, imgExt)
 	fileIdxPath := fmt.Sprintf("%s%s", constants.MediaPath, fileName)
 
-	imgExtStripDot := strings.TrimPrefix(imgExt, ".")
-	imgMIME, err := MIMEFromExt(imgExtStripDot)
-	if err != nil {
-		return nil, err
-	}
-
-	err = p.root.ContentType.AddExtension(imgExtStripDot, imgMIME)
-	if err != nil {
+	if err = p.root.ContentType.AddExtension(imgExt, imgMIME); err != nil {
 		return nil, err
 	}
 
 	overridePart := fmt.Sprintf("/%s%s", constants.MediaPath, fileName)
-	err = p.root.ContentType.AddOverride(overridePart, imgMIME)
-	if err != nil {
+	if err = p.root.ContentType.AddOverride(overridePart, imgMIME); err != nil {
 		return nil, err
 	}
 
