@@ -2,8 +2,12 @@ package docx
 
 import (
 	"encoding/xml"
+	"fmt"
+	"mime"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMarshal(t *testing.T) {
@@ -28,26 +32,19 @@ func TestMarshal(t *testing.T) {
 		},
 	}
 
-	contentType, err := MIMEFromExt(".png")
-	if err != nil {
-		t.Error(err)
-	}
-	err = types.AddExtension("png", contentType)
-	if err != nil {
-		t.Errorf("Expected no error but got %v", err)
-	}
-	types.AddOverride("/customXml/item2.xml", "application/vnd.openxmlformats-officedocument.customXmlProperties+xml")
+	contentType := mime.TypeByExtension(".png")
+	err := types.AddExtension("png", contentType)
+	assert.NoError(t, err, "problem adding extension to types")
+	err = types.AddOverride("/customXml/item2.xml", "application/vnd.openxmlformats-officedocument.customXmlProperties+xml")
+	assert.NoError(t, err, "problem adding override to types")
 
-	xmlData, err := xml.Marshal(types)
-	if err != nil {
-		t.Fatalf("Error marshalling XML: %v", err)
-	}
+	var xmlData []byte
+	xmlData, err = xml.Marshal(types)
+	assert.NoError(t, err, fmt.Sprintf("Error marshalling types XML %v", types))
 
 	expectedXML := `<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="xml" ContentType="application/xml"></Default><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"></Default><Default Extension="jpeg" ContentType="image/jpeg"></Default><Default Extension="png" ContentType="image/png"></Default><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"></Override><Override PartName="/customXml/itemProps1.xml" ContentType="application/vnd.openxmlformats-officedocument.customXmlProperties+xml"></Override><Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"></Override><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"></Override><Override PartName="/word/stylesWithEffects.xml" ContentType="application/vnd.ms-word.stylesWithEffects+xml"></Override><Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"></Override><Override PartName="/word/webSettings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.webSettings+xml"></Override><Override PartName="/word/fontTable.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.fontTable+xml"></Override><Override PartName="/word/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"></Override><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"></Override><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"></Override><Override PartName="/customXml/item2.xml" ContentType="application/vnd.openxmlformats-officedocument.customXmlProperties+xml"></Override></Types>`
-
-	if string(xmlData) != expectedXML {
-		t.Errorf("Marshalled XML does not match expected. Got: %s, Expected: %s", string(xmlData), expectedXML)
-	}
+	assert.Equal(t, expectedXML, string(xmlData),
+		fmt.Sprintf("Mashalled XML does not match expected. Got: %s, Expected: %s", string(xmlData), expectedXML))
 }
 
 func TestUnmarshal(t *testing.T) {
@@ -104,24 +101,17 @@ func TestUnmarshal(t *testing.T) {
 
 func TestAddExtension(t *testing.T) {
 	types := ContentTypes{}
-	mime, err := MIMEFromExt(".png")
-	if err != nil {
-		t.Error(err)
-	}
-	err = types.AddExtension("png", mime)
-	if err != nil {
-		t.Errorf("Expected no error but got %v", err)
-	}
-
+	mime := mime.TypeByExtension(".png")
+	err := types.AddExtension("png", mime)
+	assert.NoError(t, err)
 	expected := ContentTypes{
 		Default: []Default{
 			{"png", "image/png"},
 		},
 	}
+	assert.Equal(t, expected.Default, types.Default,
+		fmt.Sprintf("AddDefault did not add correctly. Got: %+v, Expected: %+v", types.Default, expected.Default))
 
-	if !reflect.DeepEqual(types.Default, expected.Default) {
-		t.Errorf("AddDefault did not add correctly. Got: %+v, Expected: %+v", types.Default, expected.Default)
-	}
 }
 
 func TestAddOverride(t *testing.T) {
