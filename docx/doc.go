@@ -8,4 +8,6 @@
 // // The RootDoc structure is initialized from the main godocx package,
 // which provides methods for creating a new document from a default template or
 // opening an existing document.
+//
+// This is the Tim Dadd version of DocX enhanced as necessary
 package docx

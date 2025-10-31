@@ -23,7 +23,7 @@ var docAttrs = []xml.Attr{
 	{Name: xml.Name{Local: "mc:Ignorable"}, Value: "w14 wp14 w15"},
 }
 
-// This element specifies the contents of a main document part in a WordprocessingML document.
+// The Document struct specifies the contents of a main document part in a WordprocessingML document.
 type Document struct {
 	// Reference to the RootDoc
 	Root *RootDoc
@@ -72,7 +72,7 @@ func (doc Document) MarshalXML(e *xml.Encoder, start xml.StartElement) (err erro
 	return e.EncodeToken(xml.EndElement{Name: start.Name})
 }
 
-func (d *Document) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) (err error) {
+func (doc *Document) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) (err error) {
 
 	for {
 		currentToken, err := decoder.Token()
@@ -84,17 +84,17 @@ func (d *Document) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) (e
 		case xml.StartElement:
 			switch elem.Name.Local {
 			case "body":
-				body := NewBody(d.Root)
+				body := NewBody(doc.Root)
 				if err := decoder.DecodeElement(body, &elem); err != nil {
 					return err
 				}
-				d.Body = body
+				doc.Body = body
 			case "background":
 				bg := NewBackground()
 				if err := decoder.DecodeElement(bg, &elem); err != nil {
 					return err
 				}
-				d.Background = bg
+				doc.Background = bg
 			default:
 				if err = decoder.Skip(); err != nil {
 					return err
