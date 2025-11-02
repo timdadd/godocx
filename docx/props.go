@@ -5,7 +5,7 @@ import (
 	"encoding/xml"
 	"io"
 
-	"github.com/timdadd/godocx/common/constants"
+	"godocx/common/constants"
 )
 
 // CoreProperties represents the core properties of a document, such as title, creator, and version.

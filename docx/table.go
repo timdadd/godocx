@@ -3,8 +3,8 @@ package docx
 import (
 	"encoding/xml"
 
-	"github.com/timdadd/godocx/wml/ctypes"
-	"github.com/timdadd/godocx/wml/stypes"
+	"godocx/wml/ctypes"
+	"godocx/wml/stypes"
 )
 
 type Table struct {

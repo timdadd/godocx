@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/timdadd/godocx/docx"
-	"github.com/timdadd/godocx/packager"
+	"godocx/docx"
+	"godocx/packager"
 )
 
 //go:embed templates/default.docx
@@ -14,14 +14,19 @@ var defaultDocx []byte
 
 // NewDocument creates a new document from the default template.
 func NewDocument() (*docx.RootDoc, error) {
-	return packager.Unpack(&defaultDocx)
+	return InitialDocument(defaultDocx)
 }
 
 // OpenDocument opens a document from the given file name.
-func OpenDocument(fileName string) (*docx.RootDoc, error) {
-	docxContent, err := os.ReadFile(filepath.Clean(fileName))
-	if err != nil {
-		return nil, err
+func OpenDocument(fileName string) (rd *docx.RootDoc, err error) {
+	var docxContent []byte
+	if docxContent, err = os.ReadFile(filepath.Clean(fileName)); err != nil {
+		return
 	}
-	return packager.Unpack(&docxContent)
+	return InitialDocument(docxContent)
+}
+
+// InitialDocument starts a document using the document template given
+func InitialDocument(docTemplate []byte) (*docx.RootDoc, error) {
+	return packager.Unpack(docTemplate)
 }

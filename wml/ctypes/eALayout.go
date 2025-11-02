@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"strconv"
 
-	"github.com/timdadd/godocx/wml/stypes"
+	"godocx/wml/stypes"
 )
 
 // East Asian Typography Settings

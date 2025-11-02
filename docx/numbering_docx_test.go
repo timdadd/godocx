@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	godocx "github.com/timdadd/godocx"
+	godocx "godocx"
 )
 
 // TestGenerateTestDocxWithLists creates testdata/numbering.docx containing multiple

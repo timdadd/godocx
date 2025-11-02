@@ -3,7 +3,7 @@ package ctypes
 import (
 	"encoding/xml"
 
-	"github.com/timdadd/godocx/wml/stypes"
+	"godocx/wml/stypes"
 )
 
 // Document Final Section Properties : w:sectPr

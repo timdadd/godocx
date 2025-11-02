@@ -1,8 +1,8 @@
 package docx
 
 import (
-	"github.com/timdadd/godocx/wml/ctypes"
-	"github.com/timdadd/godocx/wml/stypes"
+	"godocx/wml/ctypes"
+	"godocx/wml/stypes"
 )
 
 // GetStyleByID retrieves a style from the document styles collection based on the given style ID and type.

@@ -1,22 +1,25 @@
 package docx
 
 import (
+	"bytes"
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"godocx/common/constants"
+	"godocx/common/units"
+	"godocx/dml"
+	"godocx/dml/dmlct"
+	"godocx/dml/dmlpic"
+	"godocx/wml/ctypes"
+	"godocx/wml/stypes"
+	"image"
 	"mime"
 	"net/http"
-	"path/filepath"
+	"os"
 	"strings"
 
-	"github.com/timdadd/godocx/common/constants"
-	"github.com/timdadd/godocx/common/units"
-	"github.com/timdadd/godocx/dml"
-	"github.com/timdadd/godocx/dml/dmlct"
-	"github.com/timdadd/godocx/dml/dmlpic"
-	"github.com/timdadd/godocx/internal"
-	"github.com/timdadd/godocx/wml/ctypes"
-	"github.com/timdadd/godocx/wml/stypes"
+	_ "image/jpeg"
+	_ "image/png"
 )
 
 // Paragraph represents a paragraph in a DOCX document.
@@ -285,7 +288,7 @@ func (p *Paragraph) AddLink(text string, link string) *Hyperlink {
 //
 // Returns:
 //   - *dml.Inline: The created Inline instance representing the added drawing.
-func (p *Paragraph) addDrawing(rID string, imgCount uint, width units.Inch, height units.Inch) *dml.Inline {
+func (p *Paragraph) addDrawing(rID string, imgCount uint, width, height units.Units) *dml.Inline {
 	eWidth := width.ToEmu()
 	eHeight := height.ToEmu()
 
@@ -320,7 +323,7 @@ func (p *Paragraph) addDrawing(rID string, imgCount uint, width units.Inch, heig
 // into new paragraph
 func (p *Paragraph) AddPictureFromFile(path string, width units.Inch, height units.Inch) (pm *PicMeta, err error) {
 	var imgBytes []byte
-	if imgBytes, err = internal.FileToByte(path); err != nil {
+	if imgBytes, err = os.ReadFile(path); err != nil {
 		return nil, err
 	}
 	return p.AddImage(imgBytes, width, height)
@@ -328,16 +331,52 @@ func (p *Paragraph) AddPictureFromFile(path string, width units.Inch, height uni
 
 // AddImage adds a picture to the paragraph, use (rd *RootDoc) AddImage
 // into new paragraph
-func (p *Paragraph) AddImage(imgBytes []byte, width units.Inch, height units.Inch) (pm *PicMeta, err error) {
+func (p *Paragraph) AddImage(imgBytes []byte, width, height units.Units) (pm *PicMeta, err error) {
 	imgMIME := http.DetectContentType(imgBytes)
 	if !strings.HasPrefix(imgMIME, "image") {
-		return nil, fmt.Errorf("unknown content type (%s)", imgMIME)
+		if bytes.HasPrefix(imgBytes, []byte("<svg")) {
+			imgMIME = "image/svg+xml"
+		} else {
+			return nil, fmt.Errorf("unknown content type (%s)", imgMIME)
+		}
 	}
 	var extensionTypes []string
-	if extensionTypes, err = mime.ExtensionsByType(filepath.Ext(imgMIME)); err != nil || len(extensionTypes) == 0 {
+	if extensionTypes, err = mime.ExtensionsByType(imgMIME); err != nil || len(extensionTypes) == 0 {
 		return nil, fmt.Errorf("cannot determine extension for mime type (%s)", imgMIME)
 	}
 	imgExt := strings.TrimPrefix(extensionTypes[0], ".")
+
+	// If no dimensions are specified then try and determine the dimensions from the image
+	//
+	// If one is nil then set the dimension of the other to keep aspect ratio
+	if width == nil || height == nil {
+		// Until we add sections just use A4 less .5 inch margins as the maximum size of an image
+		maxWidth := float64(units.CM(21).ToEmu() - 2*units.Inch(0.5).ToEmu())
+		if width != nil {
+			maxWidth = float64(width.ToEmu())
+		}
+		maxHeight := float64(units.CM(29.7).ToEmu() - 2*units.Inch(0.5).ToEmu())
+		if height != nil {
+			maxHeight = float64(height.ToEmu())
+		}
+		var img image.Image
+		img, _, err = image.Decode(bytes.NewReader(imgBytes))
+		if err != nil {
+			return nil, fmt.Errorf("cannot decode image to determine height and width")
+		}
+		scaleX := maxWidth / float64(img.Bounds().Dx())
+		scaleY := maxHeight / float64(img.Bounds().Dy())
+		if scaleY > scaleX {
+			width = units.Emu(scaleX * float64(img.Bounds().Dx()))
+			height = units.Emu(scaleX * float64(img.Bounds().Dy()))
+		} else {
+			width = units.Emu(scaleY * float64(img.Bounds().Dx()))
+			height = units.Emu(scaleY * float64(img.Bounds().Dy()))
+		}
+		//width = img.Bounds().Dx()*scale
+		//sizeX, sizeY := img.Bounds().Dx(), img.Bounds().Dy()
+		//fmt.Println(img.Bounds().Min.X, img.Bounds().Min.Y, img.Bounds().Max.X, img.Bounds().Max.Y)
+	}
 
 	p.root.ImageCount += 1
 	fileName := fmt.Sprintf("image%d.%s", p.root.ImageCount, imgExt)

@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/timdadd/godocx/internal"
+	"godocx/internal"
 )
 
 func TestCellMerge_MarshalXML(t *testing.T) {

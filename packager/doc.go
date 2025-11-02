@@ -1,4 +1,4 @@
-// Package opc provides functionality related to Open Packaging Conventions (OPC).
+// Package packager opc provides functionality related to Open Packaging Conventions (OPC).
 //
 // Overview:
 //

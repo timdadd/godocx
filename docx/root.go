@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"sync"
 
-	"github.com/timdadd/godocx/wml/ctypes"
+	"godocx/wml/ctypes"
 )
 
 // RootDoc represents the root document of an Office Open XML (OOXML) document.
@@ -78,6 +78,6 @@ func LoadStyles(fileName string, fileBytes []byte) (*ctypes.Styles, error) {
 //
 //	numId := doc.NewListInstance(1)
 //	p.Numbering(numId, 0)
-func (root *RootDoc) NewListInstance(abstractNumId int) int {
-	return root.Numbering.NewListInstance(abstractNumId)
+func (rd *RootDoc) NewListInstance(abstractNumId int) int {
+	return rd.Numbering.NewListInstance(abstractNumId)
 }

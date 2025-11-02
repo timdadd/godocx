@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/timdadd/godocx/internal"
+	"godocx/internal"
 )
 
 func TestSym_MarshalXML(t *testing.T) {

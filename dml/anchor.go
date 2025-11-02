@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/timdadd/godocx/dml/dmlct"
+	"godocx/dml/dmlct"
 )
 
 type Anchor struct {

@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/timdadd/godocx/internal"
+	"godocx/internal"
 
-	"github.com/timdadd/godocx/wml/stypes"
+	"godocx/wml/stypes"
 )
 
 func areParagraphPropertiesEqual(p1, p2 ParagraphProp) bool {

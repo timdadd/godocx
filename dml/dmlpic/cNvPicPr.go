@@ -4,8 +4,8 @@ import (
 	"encoding/xml"
 	"fmt"
 
-	"github.com/timdadd/godocx/dml/dmlct"
-	"github.com/timdadd/godocx/dml/dmlprops"
+	"godocx/dml/dmlct"
+	"godocx/dml/dmlprops"
 )
 
 // Non-Visual Picture Drawing Properties

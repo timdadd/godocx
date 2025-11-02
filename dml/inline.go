@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/timdadd/godocx/common/constants"
-	"github.com/timdadd/godocx/dml/dmlct"
-	"github.com/timdadd/godocx/dml/dmlst"
+	"godocx/common/constants"
+	"godocx/dml/dmlct"
+	"godocx/dml/dmlst"
 )
 
 // This element specifies that the DrawingML object located at this position in the document is an inline object. Within a WordprocessingML document, drawing objects can exist in two states:

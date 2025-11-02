@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"testing"
 
-	"github.com/timdadd/godocx/dml/dmlct"
+	"godocx/dml/dmlct"
 )
 
 func TestMarshalStretch(t *testing.T) {

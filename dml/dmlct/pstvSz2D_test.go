@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/timdadd/godocx/common/units"
+	"godocx/common/units"
 )
 
 func TestNewPSize2D(t *testing.T) {

@@ -3,7 +3,7 @@ package dmlprops
 import (
 	"encoding/xml"
 
-	"github.com/timdadd/godocx/dml/dmlst"
+	"godocx/dml/dmlst"
 )
 
 // Picture Locks

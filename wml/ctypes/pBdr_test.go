@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/timdadd/godocx/internal"
+	"godocx/internal"
 )
 
 func TestParaBorder_MarshalXML(t *testing.T) {

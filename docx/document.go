@@ -3,8 +3,7 @@ package docx
 import (
 	"encoding/xml"
 
-	"github.com/timdadd/godocx/internal"
-	"github.com/timdadd/godocx/wml/stypes"
+	"godocx/wml/stypes"
 )
 
 var docAttrs = []xml.Attr{
@@ -46,7 +45,7 @@ func (doc *Document) IncRelationID() int {
 }
 
 // MarshalXML implements the xml.Marshaler interface for the Document type.
-func (doc Document) MarshalXML(e *xml.Encoder, start xml.StartElement) (err error) {
+func (doc *Document) MarshalXML(e *xml.Encoder, start xml.StartElement) (err error) {
 	start.Name.Local = "w:document"
 
 	start.Attr = append(start.Attr, docAttrs...)
@@ -118,7 +117,7 @@ func (doc *Document) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) 
 //	para := document.AddPageBreak()
 func (rd *RootDoc) AddPageBreak() *Paragraph {
 	p := rd.AddEmptyParagraph()
-	p.AddRun().AddBreak(internal.ToPtr(stypes.BreakTypePage))
+	p.AddRun().AddBreak(stypes.BreakTypePage)
 
 	return p
 }

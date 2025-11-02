@@ -1,9 +1,10 @@
 package docx
 
 import (
-	"github.com/timdadd/godocx/common/units"
-	"github.com/timdadd/godocx/dml"
-	"github.com/timdadd/godocx/internal"
+	"os"
+
+	"godocx/common/units"
+	"godocx/dml"
 )
 
 type PicMeta struct {
@@ -29,9 +30,9 @@ type PicMeta struct {
 // Returns:
 //   - *PicMeta: Metadata about the added picture, including the Paragraph instance and Inline element.
 //   - error: An error, if any occurred during the process.
-func (rd *RootDoc) AddPictureFromFile(path string, width units.Inch, height units.Inch) (pm *PicMeta, err error) {
+func (rd *RootDoc) AddPictureFromFile(path string, width, height units.Units) (pm *PicMeta, err error) {
 	var imgBytes []byte
-	if imgBytes, err = internal.FileToByte(path); err != nil {
+	if imgBytes, err = os.ReadFile(path); err != nil {
 		return nil, err
 	}
 	return rd.AddImage(imgBytes, width, height)
@@ -52,7 +53,7 @@ func (rd *RootDoc) AddPictureFromFile(path string, width units.Inch, height unit
 // Returns:
 //   - *PicMeta: Metadata about the added image, including the Paragraph instance and Inline element.
 //   - error: An error, if any occurred during the process.
-func (rd *RootDoc) AddImage(imgBytes []byte, width, height units.Inch) (pm *PicMeta, err error) {
+func (rd *RootDoc) AddImage(imgBytes []byte, width, height units.Units) (pm *PicMeta, err error) {
 	p := newParagraph(rd)
 	bodyElem := DocumentChild{
 		Para: p,

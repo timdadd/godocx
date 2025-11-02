@@ -1,4 +1,4 @@
-module github.com/timdadd/godocx
+module godocx
 
 go 1.25
 

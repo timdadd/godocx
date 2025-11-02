@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/timdadd/godocx/wml/ctypes"
-	"github.com/timdadd/godocx/wml/stypes"
+	"godocx/wml/ctypes"
+	"godocx/wml/stypes"
 )
 
 func TestTableStyleProp_MarshalXML(t *testing.T) {

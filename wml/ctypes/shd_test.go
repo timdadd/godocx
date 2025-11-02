@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/timdadd/godocx/wml/stypes"
+	"godocx/wml/stypes"
 )
 
 func TestShd_MarshalXML(t *testing.T) {

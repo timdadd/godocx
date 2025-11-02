@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/timdadd/godocx/common/constants"
-	"github.com/timdadd/godocx/common/units"
-	"github.com/timdadd/godocx/dml/dmlct"
-	"github.com/timdadd/godocx/dml/geom"
-	"github.com/timdadd/godocx/dml/shapes"
+	"godocx/common/constants"
+	"godocx/common/units"
+	"godocx/dml/dmlct"
+	"godocx/dml/geom"
+	"godocx/dml/shapes"
 )
 
 type Pic struct {

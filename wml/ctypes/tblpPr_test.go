@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/timdadd/godocx/internal"
-	"github.com/timdadd/godocx/wml/stypes"
+	"godocx/internal"
+	"godocx/wml/stypes"
 )
 
 func TestFloatPos_MarshalXML(t *testing.T) {

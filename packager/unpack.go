@@ -7,15 +7,15 @@ import (
 	"path"
 	"strings"
 
-	"github.com/timdadd/godocx/common/constants"
-	"github.com/timdadd/godocx/docx"
-	"github.com/timdadd/godocx/internal"
-	"github.com/timdadd/godocx/wml/ctypes"
+	"godocx/common/constants"
+	"godocx/docx"
+	"godocx/internal"
+	"godocx/wml/ctypes"
 )
 
 // ReadFromZip reads files from a zip archive.
-func ReadFromZip(content *[]byte) (map[string][]byte, error) {
-	zipReader, err := zip.NewReader(bytes.NewReader(*content), int64(len(*content)))
+func ReadFromZip(content []byte) (map[string][]byte, error) {
+	zipReader, err := zip.NewReader(bytes.NewReader(content), int64(len(content)))
 	if err != nil {
 		return nil, err
 	}
@@ -25,9 +25,7 @@ func ReadFromZip(content *[]byte) (map[string][]byte, error) {
 	)
 
 	for _, f := range zipReader.File {
-
 		fileName := strings.ReplaceAll(f.Name, "\\", "/")
-
 		if fileList[fileName], err = internal.ReadFileFromZip(f); err != nil {
 			return nil, err
 		}
@@ -36,7 +34,7 @@ func ReadFromZip(content *[]byte) (map[string][]byte, error) {
 	return fileList, nil
 }
 
-func Unpack(content *[]byte) (*docx.RootDoc, error) {
+func Unpack(content []byte) (*docx.RootDoc, error) {
 
 	rd := docx.NewRootDoc()
 

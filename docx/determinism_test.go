@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	godocx "github.com/timdadd/godocx"
-	docxpkg "github.com/timdadd/godocx/docx"
+	"godocx"
+	docxpkg "godocx/docx"
 )
 
 // Ensures that writing the same document multiple times yields identical bytes.

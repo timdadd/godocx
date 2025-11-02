@@ -1,8 +1,8 @@
 package docx
 
 import (
-	"github.com/timdadd/godocx/wml/ctypes"
-	"github.com/timdadd/godocx/wml/stypes"
+	"godocx/wml/ctypes"
+	"godocx/wml/stypes"
 )
 
 type Run struct {
@@ -170,8 +170,8 @@ func (r *Run) Underline(value stypes.Underline) *Run {
 	return r
 }
 
-// Add a break element of `stypes.BreakType` to this run.
-func (r *Run) AddBreak(breakType *stypes.BreakType) {
+// AddBreak adds a break element of `stypes.BreakType` to this run.
+func (r *Run) AddBreak(breakType stypes.BreakType) {
 	// clear := stypes.BreakClearNone
 	// switch breakType{
 	// case stypes.BreakType:
@@ -179,9 +179,9 @@ func (r *Run) AddBreak(breakType *stypes.BreakType) {
 	// }
 	br := ctypes.Break{}
 
-	if breakType != nil {
-		br.BreakType = breakType
-	}
+	//if breakType != nil {
+	br.BreakType = &breakType
+	//}
 
 	r.ct.Children = append(r.ct.Children, ctypes.RunChild{
 		Break: &br,
