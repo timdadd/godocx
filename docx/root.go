@@ -53,7 +53,7 @@ func LoadDocXml(rd *RootDoc, fileName string, fileBytes []byte) (*Document, erro
 	return &doc, nil
 }
 
-// Load styles.xml into Styles struct
+// LoadStyles into Styles struct
 func LoadStyles(fileName string, fileBytes []byte) (*ctypes.Styles, error) {
 	styles := ctypes.Styles{}
 	err := xml.Unmarshal(fileBytes, &styles)

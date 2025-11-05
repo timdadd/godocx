@@ -2,28 +2,27 @@ package ctypes
 
 import (
 	"encoding/xml"
-	"strconv"
-
 	"godocx/wml/stypes"
+	"strconv"
 )
 
-// Page Size : w:pgSz
+// PageSize : w:pgSz
 type PageSize struct {
-	Width  *uint64           `xml:"w,attr,omitempty"`
-	Height *uint64           `xml:"h,attr,omitempty"`
-	Orient stypes.PageOrient `xml:"orient,attr,omitempty"`
-	Code   *int              `xml:"code,attr,omitempty"`
+	Width  *stypes.TwipsMeasure `xml:"w,attr,omitempty"`
+	Height *stypes.TwipsMeasure `xml:"h,attr,omitempty"`
+	Orient stypes.PageOrient    `xml:"orient,attr,omitempty"`
+	Code   *int                 `xml:"code,attr,omitempty"`
 }
 
 func (p PageSize) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	start.Name.Local = "w:pgSz"
 
 	if p.Width != nil {
-		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Local: "w:w"}, Value: strconv.FormatUint(*p.Width, 10)})
+		start.Attr = append(start.Attr, p.Width.XmlAttr("w:w"))
 	}
 
 	if p.Height != nil {
-		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Local: "w:h"}, Value: strconv.FormatUint(*p.Height, 10)})
+		start.Attr = append(start.Attr, p.Height.XmlAttr("w:h"))
 	}
 
 	if p.Orient != "" {

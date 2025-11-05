@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"godocx/internal"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTextMarshalXML(t *testing.T) {
@@ -66,17 +68,9 @@ func TestTextUnmarshalXML(t *testing.T) {
 			}
 
 			err = result.UnmarshalXML(decoder, startToken.(xml.StartElement))
-			if err != nil {
-				t.Fatalf("Error during UnmarshalXML: %v", err)
-			}
-
-			if result.Text != tc.expected.Text {
-				t.Errorf("Expected text %q, but got %q", tc.expected.Text, result.Text)
-			}
-
-			if err := internal.ComparePtr("space", tc.expected.Space, result.Space); err != nil {
-				t.Errorf(err.Error())
-			}
+			assert.NoError(t, err, "Error during UnmarshalXML")
+			assert.Equal(t, tc.expected.Text, result.Text, "Unexpected result")
+			assert.Equal(t, tc.expected.Space, result.Space, "Unexpected space")
 		})
 	}
 }

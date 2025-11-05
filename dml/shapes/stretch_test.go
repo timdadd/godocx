@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"godocx/dml/dmlct"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestMarshalStretch(t *testing.T) {
@@ -28,13 +30,8 @@ func TestMarshalStretch(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			generatedXML, err := xml.Marshal(tt.stretch)
-			if err != nil {
-				t.Fatalf("Error marshaling XML: %v", err)
-			}
-
-			if string(generatedXML) != tt.expectedXML {
-				t.Errorf("Expected XML:\n%s\nBut got:\n%s", tt.expectedXML, generatedXML)
-			}
+			assert.NoError(t, err, "Error during MarshalXML")
+			assert.Equal(t, tt.expectedXML, string(generatedXML), "Unexpected result")
 		})
 	}
 }
@@ -64,9 +61,7 @@ func TestUnmarshalStretch(t *testing.T) {
 			var result Stretch
 
 			err := xml.Unmarshal([]byte(tt.inputXML), &result)
-			if err != nil {
-				t.Fatalf("Error unmarshaling XML: %v", err)
-			}
+			assert.NoError(t, err, "Error during UnmarshalXML")
 
 			if (result.FillRect == nil) != (tt.expectedResult.FillRect == nil) {
 				t.Errorf("Expected FillRect to be %v, but got %v", tt.expectedResult.FillRect, result.FillRect)

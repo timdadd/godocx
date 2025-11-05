@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/stretchr/testify/require"
 	"godocx"
 	docxpkg "godocx/docx"
+
+	"github.com/stretchr/testify/require"
 )
 
 // Ensures that writing the same document multiple times yields identical bytes.
@@ -39,7 +40,7 @@ func buildElaborateDoc(t *testing.T) *docxpkg.RootDoc {
 	t.Helper()
 
 	rd, err := godocx.NewDocument()
-	require.NoError(t, err)
+	require.NoError(t, err, "Error loading document with NewDocument")
 
 	// Headings and styled paragraph content
 	_, err = rd.AddHeading("Document Title", 0)

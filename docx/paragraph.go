@@ -330,7 +330,8 @@ func (p *Paragraph) AddPictureFromFile(path string, width units.Inch, height uni
 }
 
 // AddImage adds a picture to the paragraph, use (rd *RootDoc) AddImage
-// into new paragraph
+// into new paragraph. If the height or width are nil then assume page width
+// If either the height or width is nil then preserve the aspect ratio
 func (p *Paragraph) AddImage(imgBytes []byte, width, height units.Units) (pm *PicMeta, err error) {
 	imgMIME := http.DetectContentType(imgBytes)
 	if !strings.HasPrefix(imgMIME, "image") {
@@ -351,21 +352,20 @@ func (p *Paragraph) AddImage(imgBytes []byte, width, height units.Units) (pm *Pi
 	// If one is nil then set the dimension of the other to keep aspect ratio
 	if width == nil || height == nil {
 		// Until we add sections just use A4 less .5 inch margins as the maximum size of an image
-		maxWidth := float64(units.CM(21).ToEmu() - 2*units.Inch(0.5).ToEmu())
+		maxWidth, maxHeight := p.root.UsableTextArea()
 		if width != nil {
-			maxWidth = float64(width.ToEmu())
+			maxWidth = width.ToTwip()
 		}
-		maxHeight := float64(units.CM(29.7).ToEmu() - 2*units.Inch(0.5).ToEmu())
-		if height != nil {
-			maxHeight = float64(height.ToEmu())
-		}
+		//if height != nil {
+		//	maxHeight = height.ToTwip()
+		//}
 		var img image.Image
 		img, _, err = image.Decode(bytes.NewReader(imgBytes))
 		if err != nil {
 			return nil, fmt.Errorf("cannot decode image to determine height and width")
 		}
-		scaleX := maxWidth / float64(img.Bounds().Dx())
-		scaleY := maxHeight / float64(img.Bounds().Dy())
+		scaleX := float64(maxWidth.ToEmu()) / float64(img.Bounds().Dx())
+		scaleY := float64(maxHeight.ToEmu()) / float64(img.Bounds().Dy())
 		if scaleY > scaleX {
 			width = units.Emu(scaleX * float64(img.Bounds().Dx()))
 			height = units.Emu(scaleX * float64(img.Bounds().Dy()))
@@ -373,9 +373,6 @@ func (p *Paragraph) AddImage(imgBytes []byte, width, height units.Units) (pm *Pi
 			width = units.Emu(scaleY * float64(img.Bounds().Dx()))
 			height = units.Emu(scaleY * float64(img.Bounds().Dy()))
 		}
-		//width = img.Bounds().Dx()*scale
-		//sizeX, sizeY := img.Bounds().Dx(), img.Bounds().Dy()
-		//fmt.Println(img.Bounds().Min.X, img.Bounds().Min.Y, img.Bounds().Max.X, img.Bounds().Max.Y)
 	}
 
 	p.root.ImageCount += 1

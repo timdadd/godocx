@@ -2,16 +2,16 @@ package docx
 
 import (
 	"encoding/xml"
-
+	"errors"
 	"godocx/wml/ctypes"
 )
 
 // The Body element specifies the contents of the body of the document – the main document editing surface.
 type Body struct {
 	root     *RootDoc
-	XMLName  xml.Name `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main body"`
+	XMLName  xml.Name            `xml:"http://schemas.openxmlformats.org/wordprocessingml/2006/main body"`
+	SectPr   *ctypes.SectionProp // This is always the current section property added to body
 	Children []DocumentChild
-	SectPr   *ctypes.SectionProp
 }
 
 // DocumentChild represents a child element within a Word document, which can be a Paragraph or a Table.
@@ -32,24 +32,24 @@ func NewBody(root *RootDoc) *Body {
 func (b *Body) MarshalXML(e *xml.Encoder, start xml.StartElement) (err error) {
 	start.Name.Local = "w:body"
 
-	err = e.EncodeToken(start)
-	if err != nil {
-		return err
+	if err = e.EncodeToken(start); err != nil {
+		return
 	}
 
 	if b.Children != nil {
 		for _, child := range b.Children {
 			if child.Para != nil {
 				if err = child.Para.ct.MarshalXML(e, xml.StartElement{}); err != nil {
-					return err
+					return
 				}
 			}
 
 			if child.Table != nil {
 				if err = child.Table.ct.MarshalXML(e, xml.StartElement{}); err != nil {
-					return err
+					return
 				}
 			}
+
 		}
 	}
 
@@ -67,8 +67,8 @@ func (b *Body) MarshalXML(e *xml.Encoder, start xml.StartElement) (err error) {
 func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) (err error) {
 
 	for {
-		currentToken, err := d.Token()
-		if err != nil {
+		var currentToken xml.Token
+		if currentToken, err = d.Token(); err != nil {
 			return err
 		}
 
@@ -77,19 +77,22 @@ func (b *Body) UnmarshalXML(d *xml.Decoder, start xml.StartElement) (err error) 
 			switch elem.Name.Local {
 			case "p":
 				para := newParagraph(b.root)
-				if err := para.unmarshalXML(d, elem); err != nil {
+				if err = para.unmarshalXML(d, elem); err != nil {
 					return err
 				}
 				b.Children = append(b.Children, DocumentChild{Para: para})
 			case "tbl":
 				tbl := NewTable(b.root)
-				if err := tbl.unmarshalXML(d, elem); err != nil {
+				if err = tbl.unmarshalXML(d, elem); err != nil {
 					return err
 				}
 				b.Children = append(b.Children, DocumentChild{Table: tbl})
 			case "sectPr":
+				if b.SectPr != nil {
+					return errors.New("unexpected two sections in the body")
+				}
 				b.SectPr = ctypes.NewSectionProper()
-				if err := d.DecodeElement(b.SectPr, &elem); err != nil {
+				if err = d.DecodeElement(b.SectPr, &elem); err != nil {
 					return err
 				}
 			default:

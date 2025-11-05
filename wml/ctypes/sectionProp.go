@@ -2,11 +2,10 @@ package ctypes
 
 import (
 	"encoding/xml"
-
 	"godocx/wml/stypes"
 )
 
-// Document Final Section Properties : w:sectPr
+// SectionProp are the Section Properties : w:sectPr
 type SectionProp struct {
 	HeaderReference *HeaderReference                       `xml:"headerReference,omitempty"`
 	FooterReference *FooterReference                       `xml:"footerReference,omitempty"`

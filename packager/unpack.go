@@ -45,8 +45,8 @@ func Unpack(content []byte) (*docx.RootDoc, error) {
 
 	// Load content type details
 	ctBytes := fileIndex[constants.ConentTypeFileIdx]
-	ct, err := LoadContentTypes(ctBytes)
-	if err != nil {
+	var ct *docx.ContentTypes
+	if ct, err = LoadContentTypes(ctBytes); err != nil {
 		return nil, err
 	}
 	delete(fileIndex, constants.ConentTypeFileIdx)
@@ -54,14 +54,14 @@ func Unpack(content []byte) (*docx.RootDoc, error) {
 
 	rd.ImageCount = 0
 
-	rootRelURI, err := GetRelsURI("")
-	if err != nil {
+	var rootRelURI *string
+	if rootRelURI, err = GetRelsURI(""); err != nil {
 		return nil, err
 	}
 
 	rootRelBytes := fileIndex[*rootRelURI]
-	rootRelations, err := LoadRelationShips(*rootRelURI, rootRelBytes)
-	if err != nil {
+	var rootRelations *docx.Relationships
+	if rootRelations, err = LoadRelationShips(*rootRelURI, rootRelBytes); err != nil {
 		return nil, err
 	}
 	delete(fileIndex, *rootRelURI)

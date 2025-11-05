@@ -29,7 +29,7 @@ func (t *Table) Width(v int, u stypes.TableWidth) *Table {
 }
 
 /*
-The table grid is a definition of the set of grid columns which define all of the shared vertical edges of the table,
+Grid is the table grid definition being the set of grid columns which define all the shared vertical edges of the table,
 as well as default widths for each of these grid columns.
 These grid column widths are then used to determine the size of the table based on the table layout algorithm used
 */

@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// Numbering Definition Instance Reference
+// NumProp is thw Numbering Definition Instance Reference
 type NumProp struct {
 	//Numbering Level Reference
 	ILvl *DecimalNum `xml:"ilvl,omitempty"`

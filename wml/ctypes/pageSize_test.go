@@ -2,10 +2,13 @@ package ctypes
 
 import (
 	"encoding/xml"
+	"godocx/common/units"
 	"strings"
 	"testing"
 
 	"godocx/wml/stypes"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestPageSize_MarshalXML(t *testing.T) {
@@ -17,8 +20,8 @@ func TestPageSize_MarshalXML(t *testing.T) {
 		{
 			name: "All attributes",
 			input: PageSize{
-				Width:  uint64Ptr(12240),
-				Height: uint64Ptr(15840),
+				Width:  units.Inch(8.5).TwipsMeasure(),
+				Height: units.Inch(11).TwipsMeasure(),
 				Orient: stypes.PageOrientLandscape,
 				Code:   intPtr(1),
 			},
@@ -27,8 +30,8 @@ func TestPageSize_MarshalXML(t *testing.T) {
 		{
 			name: "Some attributes",
 			input: PageSize{
-				Width:  uint64Ptr(12240),
-				Height: uint64Ptr(15840),
+				Width:  units.Inch(8.5).TwipsMeasure(),
+				Height: units.Inch(11).TwipsMeasure(),
 			},
 			expected: `<w:pgSz w:w="12240" w:h="15840"></w:pgSz>`,
 		},
@@ -42,18 +45,11 @@ func TestPageSize_MarshalXML(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var result strings.Builder
+			//tt.input.XMLName.Local = tt.input.XMLName.Space + ":" + tt.input.XMLName.Local
+			//tt.input.XMLName.Space = "w"
 			encoder := xml.NewEncoder(&result)
-			start := xml.StartElement{Name: xml.Name{Local: "w:pgSz"}}
-
-			err := tt.input.MarshalXML(encoder, start)
-			if err != nil {
-				t.Fatalf("Error marshaling XML: %v", err)
-			}
-			encoder.Flush()
-
-			if result.String() != tt.expected {
-				t.Errorf("Expected XML:\n%s\n\nGot:\n%s", tt.expected, result.String())
-			}
+			assert.NoError(t, encoder.Encode(&tt.input), "error encoding xml")
+			assert.Equal(t, tt.expected, result.String(), "XML output not as expected")
 		})
 	}
 }
@@ -68,8 +64,8 @@ func TestPageSize_UnmarshalXML(t *testing.T) {
 			name:     "All attributes",
 			inputXML: `<w:pgSz w:w="12240" w:h="15840" w:orient="landscape" w:code="1"></w:pgSz>`,
 			expected: PageSize{
-				Width:  uint64Ptr(12240),
-				Height: uint64Ptr(15840),
+				Width:  units.Inch(8.5).TwipsMeasure(),
+				Height: units.Inch(11).TwipsMeasure(),
 				Orient: stypes.PageOrientLandscape,
 				Code:   intPtr(1),
 			},
@@ -78,8 +74,8 @@ func TestPageSize_UnmarshalXML(t *testing.T) {
 			name:     "Some attributes",
 			inputXML: `<w:pgSz w:w="12240" w:h="15840"></w:pgSz>`,
 			expected: PageSize{
-				Width:  uint64Ptr(12240),
-				Height: uint64Ptr(15840),
+				Width:  units.Inch(8.5).TwipsMeasure(),
+				Height: units.Inch(11).TwipsMeasure(),
 			},
 		},
 		{
@@ -93,41 +89,8 @@ func TestPageSize_UnmarshalXML(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			var result PageSize
 
-			err := xml.Unmarshal([]byte(tt.inputXML), &result)
-			if err != nil {
-				t.Fatalf("Error during unmarshaling: %v", err)
-			}
-
-			comparePageSizes(t, result, tt.expected)
+			assert.NoError(t, xml.Unmarshal([]byte(tt.inputXML), &result), "Error unmarshalling xml")
+			assert.Equal(t, tt.expected, result, "XML output not as expected")
 		})
 	}
-}
-
-func uint64Ptr(i uint64) *uint64 {
-	return &i
-}
-
-func comparePageSizes(t *testing.T, got, want PageSize) {
-	if !compareUint64Ptr(got.Width, want.Width) {
-		t.Errorf("Width = %v, want %v", got.Width, want.Width)
-	}
-	if !compareUint64Ptr(got.Height, want.Height) {
-		t.Errorf("Height = %v, want %v", got.Height, want.Height)
-	}
-	if got.Orient != want.Orient {
-		t.Errorf("Orient = %v, want %v", got.Orient, want.Orient)
-	}
-	if !compareIntPtr(got.Code, want.Code) {
-		t.Errorf("Code = %v, want %v", got.Code, want.Code)
-	}
-}
-
-func compareUint64Ptr(got, want *uint64) bool {
-	if got == nil && want == nil {
-		return true
-	}
-	if got == nil || want == nil {
-		return false
-	}
-	return *got == *want
 }

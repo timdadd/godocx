@@ -8,7 +8,7 @@ import (
 	"godocx/wml/stypes"
 )
 
-// Numbering Level Associated Paragraph Properties
+// ParagraphProp includes all properties associated with Paragraph
 type ParagraphProp struct {
 	// 1. This element specifies the style ID of the paragraph style which shall be used to format the contents of this paragraph.
 	Style *CTString `xml:"pStyle,omitempty"`
@@ -337,13 +337,13 @@ func (pp ParagraphProp) MarshalXML(e *xml.Encoder, start xml.StartElement) (err 
 		}
 	}
 
-	if pp.SectPr != nil {
-		if err = pp.SectPr.MarshalXML(e, xml.StartElement{
-			Name: xml.Name{Local: "w:sectPr"},
-		}); err != nil {
-			return fmt.Errorf("PPrChange: %w", err)
-		}
-	}
+	//if pp.SectPr != nil {
+	//	if err = pp.SectPr.MarshalXML(e, xml.StartElement{
+	//		Name: xml.Name{Local: "w:sectPr"},
+	//	}); err != nil {
+	//		return fmt.Errorf("PPrChange: %w", err)
+	//	}
+	//}
 
 	//36. PPrChange
 	if pp.PPrChange != nil {

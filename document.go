@@ -9,7 +9,7 @@ import (
 	"godocx/packager"
 )
 
-//go:embed templates/default.docx
+//go:embed "templates/meaty_doc.docx"
 var defaultDocx []byte
 
 // NewDocument creates a new document from the default template.

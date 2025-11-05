@@ -2,18 +2,18 @@ package ctypes
 
 import (
 	"encoding/xml"
-	"strconv"
+	"godocx/wml/stypes"
 )
 
 // PageMargin represents the page margins of a Word document.
 type PageMargin struct {
-	Left   *int `xml:"left,attr,omitempty"`
-	Right  *int `xml:"right,attr,omitempty"`
-	Gutter *int `xml:"gutter,attr,omitempty"`
-	Header *int `xml:"header,attr,omitempty"`
-	Top    *int `xml:"top,attr,omitempty"`
-	Footer *int `xml:"footer,attr,omitempty"`
-	Bottom *int `xml:"bottom,attr,omitempty"`
+	Left   *stypes.TwipsMeasure       `xml:"left,attr,omitempty"`
+	Right  *stypes.TwipsMeasure       `xml:"right,attr,omitempty"`
+	Gutter *stypes.TwipsMeasure       `xml:"gutter,attr,omitempty"`
+	Header *stypes.TwipsMeasure       `xml:"header,attr,omitempty"`
+	Top    *stypes.SignedTwipsMeasure `xml:"top,attr,omitempty"`
+	Footer *stypes.TwipsMeasure       `xml:"footer,attr,omitempty"`
+	Bottom *stypes.SignedTwipsMeasure `xml:"bottom,attr,omitempty"`
 }
 
 // MarshalXML implements the xml.Marshaler interface for the PageMargin type.
@@ -21,11 +21,9 @@ type PageMargin struct {
 func (p PageMargin) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	start.Name.Local = "w:pgMar"
 
-	start.Attr = []xml.Attr{}
-
 	attrs := []struct {
 		local string
-		value *int
+		value interface{}
 	}{
 		{"w:left", p.Left},
 		{"w:right", p.Right},
@@ -37,10 +35,16 @@ func (p PageMargin) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	}
 
 	for _, attr := range attrs {
-		if attr.value == nil {
-			continue
+		switch v := attr.value.(type) {
+		case *stypes.TwipsMeasure:
+			if v != nil {
+				start.Attr = append(start.Attr, v.XmlAttr(attr.local))
+			}
+		case *stypes.SignedTwipsMeasure:
+			if v != nil {
+				start.Attr = append(start.Attr, v.XmlAttr(attr.local))
+			}
 		}
-		start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Local: attr.local}, Value: strconv.Itoa(*attr.value)})
 	}
 
 	return e.EncodeElement("", start)

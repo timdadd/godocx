@@ -6,6 +6,8 @@ import (
 
 	"godocx/dml/dmlst"
 	"godocx/internal"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTile_MarshalXML(t *testing.T) {
@@ -74,35 +76,14 @@ func TestTile_UnmarshalXML(t *testing.T) {
 			var tile Tile
 			err := xml.Unmarshal([]byte(tt.xmlInput), &tile)
 			if tt.expectError {
-				if err == nil {
-					t.Fatalf("Expected error but got none")
-				}
-				// Test passed as error was expected and occurred
+				assert.Error(t, err, "expected an error")
 				return
 			}
-
 			if err != nil {
-				t.Fatalf("Error unmarshalling XML: %v", err)
+				assert.NoError(t, err, "unexpected error")
+				return
 			}
-
-			if err := internal.ComparePtr("Tx", tt.expected.Tx, tile.Tx); err != nil {
-				t.Errorf(err.Error())
-			}
-			if err := internal.ComparePtr("Ty", tt.expected.Ty, tile.Ty); err != nil {
-				t.Errorf(err.Error())
-			}
-			if err := internal.ComparePtr("Sx", tt.expected.Sx, tile.Sx); err != nil {
-				t.Errorf(err.Error())
-			}
-			if err := internal.ComparePtr("Sy", tt.expected.Sy, tile.Sy); err != nil {
-				t.Errorf(err.Error())
-			}
-			if err := internal.ComparePtr("Flip", tt.expected.Flip, tile.Flip); err != nil {
-				t.Errorf(err.Error())
-			}
-			if err := internal.ComparePtr("Algn", tt.expected.Algn, tile.Algn); err != nil {
-				t.Errorf(err.Error())
-			}
+			assert.Equal(t, tt.expected, tile)
 		})
 	}
 }

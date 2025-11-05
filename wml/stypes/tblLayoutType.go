@@ -5,7 +5,7 @@ import (
 	"errors"
 )
 
-// Table Layout Type
+// TableLayout Type
 type TableLayout string
 
 const (

@@ -82,7 +82,7 @@ func (doc *Document) UnmarshalXML(decoder *xml.Decoder, start xml.StartElement) 
 		switch elem := currentToken.(type) {
 		case xml.StartElement:
 			switch elem.Name.Local {
-			case "body":
+			case "body": // Most of the word document sits within the body
 				body := NewBody(doc.Root)
 				if err := decoder.DecodeElement(body, &elem); err != nil {
 					return err

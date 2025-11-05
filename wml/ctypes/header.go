@@ -6,7 +6,7 @@ import (
 	"godocx/wml/stypes"
 )
 
-// Header Reference
+// HeaderReference provides relationship references for headers and footers
 type HeaderReference struct {
 	Type stypes.HdrFtrType `xml:"type,attr"` //Header or Footer Type
 	ID   string            `xml:"id,attr"`   //Relationship to Part

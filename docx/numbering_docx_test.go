@@ -11,6 +11,8 @@ import (
 	"testing"
 
 	godocx "godocx"
+
+	"github.com/stretchr/testify/require"
 )
 
 // TestGenerateTestDocxWithLists creates testdata/numbering.docx containing multiple
@@ -18,9 +20,7 @@ import (
 // programmatically confirm numbering instances are written.
 func TestGenerateNumberingDocxSample(t *testing.T) {
 	doc, err := godocx.NewDocument()
-	if err != nil {
-		t.Fatalf("NewDocument error: %v", err)
-	}
+	require.NoError(t, err, "Error loading document with NewDocument")
 
 	rd := doc
 

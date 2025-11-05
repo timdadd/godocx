@@ -1,6 +1,9 @@
 package ctypes
 
-import "godocx/wml/stypes"
+import (
+	"godocx/common/units"
+	"godocx/wml/stypes"
+)
 
 /*
 code  |  name    |  size
@@ -16,57 +19,42 @@ code  |  name    |  size
 */
 
 var (
-	// A1
-	A1Width  = uint64(23386) // 594mm in twips
-	A1Height = uint64(33110) // 841mm in twips
-	A1Code   = 4
-	A1       = &PageSize{
-		Width:  &A1Width,
-		Height: &A1Height,
+	A1Code = 4
+	A1     = &PageSize{
+		Width:  units.MM(594).TwipsMeasure(),
+		Height: units.MM(841).TwipsMeasure(),
 		Orient: stypes.PageOrientPortrait,
 		Code:   &A1Code,
 	}
 
-	// A2
-	A2Width  = uint64(16535) // 420mm in twips
-	A2Height = uint64(23386) // 594mm in twips
-	A2Code   = 4
-	A2       = &PageSize{
-		Width:  &A2Width,
-		Height: &A2Height,
+	A2Code = 4
+	A2     = &PageSize{
+		Width:  units.MM(420).TwipsMeasure(),
+		Height: units.MM(594).TwipsMeasure(),
 		Orient: stypes.PageOrientPortrait,
 		Code:   &A2Code,
 	}
 
-	// A3
-	A3Width  = uint64(11693) // 297mm in twips
-	A3Height = uint64(16535) // 420mm in twips
-	A3Code   = 4
-	A3       = &PageSize{
-		Width:  &A3Width,
-		Height: &A3Height,
+	A3Code = 4
+	A3     = &PageSize{
+		Width:  units.MM(297).TwipsMeasure(),
+		Height: units.MM(420).TwipsMeasure(),
 		Orient: stypes.PageOrientPortrait,
 		Code:   &A3Code,
 	}
 
-	// A4
-	A4Width  = uint64(11906) // 210mm in twips
-	A4Height = uint64(16838) // 297mm in twips
-	A4Code   = 1
-	A4       = &PageSize{
-		Width:  &A4Width,
-		Height: &A4Height,
+	A4Code = 1
+	A4     = &PageSize{
+		Width:  units.MM(210).TwipsMeasure(),
+		Height: units.MM(297).TwipsMeasure(),
 		Orient: stypes.PageOrientPortrait,
 		Code:   &A4Code,
 	}
 
-	// A5
-	A5Width  = uint64(8268)  // 148mm in twips
-	A5Height = uint64(11693) // 210mm in twips
-	A5Code   = 1
-	A5       = &PageSize{
-		Width:  &A5Width,
-		Height: &A5Height,
+	A5Code = 1
+	A5     = &PageSize{
+		Width:  units.MM(148).TwipsMeasure(),
+		Height: units.MM(210).TwipsMeasure(),
 		Orient: stypes.PageOrientPortrait,
 		Code:   &A5Code,
 	}
