@@ -121,3 +121,9 @@ func (m Markup) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	start.Attr = append(start.Attr, xml.Attr{Name: xml.Name{Local: "w:id"}, Value: strconv.Itoa(m.ID)})
 	return e.EncodeElement("", start)
 }
+
+func StringPtr(s string) *string {
+	return &s
+}
+
+func IntPtr(i int) *int { return &i }

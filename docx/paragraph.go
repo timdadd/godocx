@@ -61,7 +61,7 @@ func paraWithText(text string) paraOption {
 	}
 }
 
-func (p *Paragraph) ensureProp() {
+func (p *Paragraph) EnsureProp() {
 	if p.ct.Property == nil {
 		p.ct.Property = ctypes.DefaultParaProperty()
 	}
@@ -96,7 +96,7 @@ func (rd *RootDoc) AddParagraph(text string) *Paragraph {
 @param after: Spacing Below Paragraph in twips
 */
 func (p *Paragraph) Spacing(before uint64, after uint64) {
-	p.ensureProp()
+	p.EnsureProp()
 	p.ct.Property.Spacing = ctypes.NewParagraphSpacing(before, after)
 }
 
@@ -110,7 +110,7 @@ func (p *Paragraph) Spacing(before uint64, after uint64) {
 //	p1 := document.AddParagraph("Example para")
 //	paragraph.Style("List Number")
 func (p *Paragraph) Style(value string) {
-	p.ensureProp()
+	p.EnsureProp()
 	p.ct.Property.Style = ctypes.NewParagraphStyle(value)
 }
 
@@ -125,7 +125,7 @@ func (p *Paragraph) Style(value string) {
 //	p1 := document.AddParagraph("Example justified para")
 //	p1.Justification(stypes.JustificationCenter) // Center justification
 func (p *Paragraph) Justification(value stypes.Justification) {
-	p.ensureProp()
+	p.EnsureProp()
 
 	p.ct.Property.Justification = ctypes.NewGenSingleStrVal(value)
 }
@@ -148,7 +148,7 @@ func (p *Paragraph) Justification(value stypes.Justification) {
 // defined by numbering definition ID 1 and level 0.
 func (p *Paragraph) Numbering(id int, level int) {
 
-	p.ensureProp()
+	p.EnsureProp()
 
 	if p.ct.Property.NumProp == nil {
 		p.ct.Property.NumProp = &ctypes.NumProp{}
@@ -177,7 +177,7 @@ func (p *Paragraph) Numbering(id int, level int) {
 //	p1.Indent(&indent360)
 func (p *Paragraph) Indent(indentProp *ctypes.Indent) {
 
-	p.ensureProp()
+	p.EnsureProp()
 
 	p.ct.Property.Indent = indentProp
 }

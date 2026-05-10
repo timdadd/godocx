@@ -167,10 +167,6 @@ func TestBorder_UnmarshalXML(t *testing.T) {
 	}
 }
 
-func StringPtr(s string) *string {
-	return &s
-}
-
 func OnOffPtr(o stypes.OnOff) *stypes.OnOff {
 	return &o
 }

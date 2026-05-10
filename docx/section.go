@@ -13,7 +13,7 @@ import (
 // The details of the previous section are copied into the new section
 func (rd *RootDoc) SectionBreak() {
 	p := rd.AddEmptyParagraph()
-	p.ensureProp()
+	p.EnsureProp()
 	p.ct.Property.SectPr = rd.Document.Body.SectPr
 	rd.Document.Body.SectPr = ctypes.NewSectionProper()
 }

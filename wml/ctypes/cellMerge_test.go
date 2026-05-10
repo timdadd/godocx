@@ -42,7 +42,7 @@ func TestCellMerge_UnmarshalXML(t *testing.T) {
 	expectedCellMerge := &CellMerge{
 		ID:         2,
 		Author:     "Jane Smith",
-		Date:       xmlStrPtr("2024-06-25"), // Helper function to get pointer to string
+		Date:       stringPtr("2024-06-25"), // Helper function to get pointer to string
 		VMerge:     internal.ToPtr(AnnotationVMergeRest),
 		VMergeOrig: nil,
 	}
